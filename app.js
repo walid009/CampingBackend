@@ -1,27 +1,231 @@
-const MongoClient = require('mongodb').MongoClient;
-const assert = require('assert');
+const mongoose = require('mongoose');
+const express = require('express');
+const bodyParser = require('body-parser');
+//const date = require(__dirname + "date.js")
 
-const url = 'mongodb://127.0.0.1:27017'
+const app = express()
 
-const dbName = 'campingdb';
+//app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json({ type: 'application/json' }))
+//app.use(express.json)
 
-const client = new MongoClient(url);
+const https = require('https');
+const { response } = require('express');
+//mongoose
+mongoose.connect("mongodb://127.0.0.1:27017/campingDB", { useNewUrlParser: true });
 
-client.connect(function(err){
-    assert.equal(null,err)
-    const db = client.db(dbName);
-    console.log("connexion etablie");
-    insertDocumentsUtilisateur(db, function(){
-    })
-    insertDocumentsEvenement(db,function(){
-    })
-    insertDocumentsFeedBack(db,function(){
-    })
-    insertDocumentsFavorite(db,function(){
-      client.close();
-    })
+const userSchema = new mongoose.Schema({
+  nom: String,
+  prenom: String,
+  email: String,
+  password: String,
+  role: String,
+  telephone: String
+});
+const eventSchema = new mongoose.Schema({
+  titre: String,
+  description: String,
+  date: Date,
+  position:{
+    Longitude: Number,
+    Latitude: Number
+  },
+  createur:userSchema,
+  participants:[
+    {
+      campeur: userSchema
+    }
+  ]
+});
+
+const Event = mongoose.model("Event", eventSchema)
+const User = mongoose.model("User", userSchema)
+
+app.listen(3000, function(){
+  const today = new Date()
+  console.log("Server started on port 3000 "+today);
 })
 
+app.get("/",function(request,response){
+  response.send("secure")
+});
+
+app.post("/user/create",function(request,response){
+  //console.log(request)
+  const user = new User(request.body)
+  user.save()
+  console.log(user)
+});
+
+app.get("/login/:email",function(request,response){
+
+  User.findOne({email: request.params.email},function(err, user){
+    if(err){
+      console.log(err);
+    }else{
+      //mongoose.connection.close();
+      //events.forEach(function(event){
+        //console.log(event.createur.nom);
+      //});
+      console.log(user)
+      if(user === null){
+        response.status(400);
+      }else{
+        response.status(200);
+      }
+      response.send(user)
+    }
+  });
+});
+
+app.get("/events",function(request,response){
+  Event.find(function(err, events){
+    if(err){
+      console.log(err);
+    }else{
+      //mongoose.connection.close();
+      //events.forEach(function(event){
+        //console.log(event.createur.nom);
+      //});
+      response.send(events);
+    }
+  });
+});
+
+app.post("/event/create",function(request,response){
+  //console.log(request)
+  const event = new Event(request.body)
+  event.save()
+  response.send(event)
+});
+
+app.put("/event/update/:id",function(request,response){
+  const { id } = request.params;
+  console.log(request.body)
+  Event.updateOne({_id: id}, {titre: request.body.titre, description: request.body.description}
+    ,function(err){
+      if(err){
+        console.log("failed");
+      }else{
+        console.log("success update");
+      }
+    })
+  return response.send("update")
+});
+
+app.delete("/event/delete/:id" , function(req,res){
+  console.log("en cour")
+  const { id } = req.params;
+  console.log(id)
+  Event.findByIdAndRemove(id, function(err){
+    if(!err){
+      console.log("success")
+    }else{
+      console.log("failed")
+    }
+  })
+  return res.send("deleted")
+})
+
+/*
+mongoose.connect("mongodb://127.0.0.1:27017/campingDB", { useNewUrlParser: true });
+
+const userSchema = new mongoose.Schema({
+  nom: String,
+  prenom: String,
+  email: String,
+  password: String,
+  telephone: Number,
+  role: String
+})
+
+const eventSchema = new mongoose.Schema({
+    titre: String,
+    description: String,
+    position:{
+      Longitude: Number,
+      Latitude: Number
+    },
+    createur:{
+      nom: String,
+      prenom: String,
+      email: String,
+      password: String,
+      telephone: Number,
+      role: String
+    },
+    participants:[
+      {
+        campeur: userSchema
+      }
+    ]
+});
+
+const Event = mongoose.model("Event", eventSchema)
+const User = mongoose.model("User", userSchema)
+
+const user = new User({
+  nom: "chek",
+  prenom: "walid",
+  email: "walid@gmail.com",
+  password: "123",
+  telephone: 5555555,
+  role: "campeur"
+})
+//user.save()
+const organisateur = new User({
+  nom: "organisa",
+  prenom: "organisa updated",
+  email: "org@gmail.com",
+  password: "123",
+  telephone: 66666666,
+  role: "organisateur"
+})
+
+const event = new Event({
+  titre: "camping aindrahem new",
+  description: "1 nuit dans aindrahem",
+  position:{
+      Longitude: 123.5,
+      Latitude: 34.76
+    }, 
+  createur: organisateur,
+      participants:[
+        {
+          campeur: user
+        }
+      ]
+})
+//event.save();
+
+/*Event.updateOne({name: "org"}, {createur: organisateur}, function(err){
+  if(err){
+    console.log(err);
+  }else{
+    console.log("Succesfully updated")
+  }
+})*/
+/*
+Event.find(function(err, events){
+  if(err){
+    console.log(err);
+  }else{
+    mongoose.connection.close();
+    events.forEach(function(event){
+      console.log(event.createur.nom);
+    });
+  }
+})
+
+/*Event.deleteMany({titre: "camping aindrahem"}, function(err){
+  if(err){
+    console.log(err);
+  } else {
+    console.log("delete succcefully")
+  }
+})*/
+
+/*
 const insertDocumentsUtilisateur = function(db, callback) {
   const collection = db.collection('utilisateur');
   collection.insertMany([
@@ -110,43 +314,6 @@ const insertDocumentsUtilisateur = function(db, callback) {
     //assert.equal(3, result.result.n);
     //assert.equal(3, result.ops.length);
     console.log("insertion de 3 utilisateurs");
-    callback(result);
-  });
-}
-
-const insertDocumentsEvenement = function(db, callback) {
-  const collection = db.collection('evenement');
-  collection.insertOne(
-    {
-      titre: "camping aindrahem",
-      description: "1 nuit dans aindrahem",
-      position:{
-        Longitude: 123.0,
-        Latitude: 34.0
-      },
-      createur:{
-        nom: "org",
-        prenom: "org",
-        email: "org@gmail.com",
-        password: "123",
-        telephone: 66666666,
-        role: "organisateur"
-      },
-      participants:[
-        {
-          nom: "chek",
-          prenom: "walid",
-          email: "walid@gmail.com",
-          password: "123",
-          telephone: 5555555,
-          role: "campeur"
-        }
-      ]
-    },function(err, result){
-    assert.equal(err,null);
-    //assert.equal(3, result.result.n);
-    //assert.equal(3, result.ops.length);
-    console.log("insertion d un evenement");
     callback(result);
   });
 }
@@ -243,7 +410,7 @@ const insertDocumentsFavorite = function(db, callback) {
   });
 }
 
-/*const { MongoClient } = require("mongodb");
+const { MongoClient } = require("mongodb");
 
 // Replace the uri string with your MongoDB deployment's connection string.
 const uri =
