@@ -20,7 +20,8 @@ const userSchema = new mongoose.Schema({
   email: String,
   password: String,
   role: String,
-  telephone: String
+  telephone: String,
+  valid: Boolean
 });
 const eventSchema = new mongoose.Schema({
   titre: String,
@@ -32,9 +33,10 @@ const eventSchema = new mongoose.Schema({
   },
   createur:userSchema,
   participants:[
-    {
-      campeur: userSchema
-    }
+   // {
+      //campeur:
+       userSchema
+   // }
   ]
 });
 
@@ -49,6 +51,16 @@ app.listen(3000, function(){
 app.get("/",function(request,response){
   response.send("secure")
 });
+//user
+app.get("/users",function(request,response){
+  User.find(function(err, users){
+    if(err){
+      console.log(err);
+    }else{
+      response.send(users);
+    }
+  });
+})
 
 app.post("/user/create",function(request,response){
   //console.log(request)
@@ -57,8 +69,21 @@ app.post("/user/create",function(request,response){
   console.log(user)
 });
 
-app.get("/login/:email",function(request,response){
+app.put("/user/confirm/:id",function(request,response){
+  const { id } = request.params;
+  console.log(request.body)
+  User.updateOne({_id: id}, {valid: request.body.valid}
+    ,function(err){
+      if(err){
+        console.log("failed");
+      }else{
+        console.log("success update");
+      }
+    })
+  return response.send("update")
+});
 
+app.get("/login/:email",function(request,response){
   User.findOne({email: request.params.email},function(err, user){
     if(err){
       console.log(err);
@@ -77,7 +102,7 @@ app.get("/login/:email",function(request,response){
     }
   });
 });
-
+//event
 app.get("/events",function(request,response){
   Event.find(function(err, events){
     if(err){
@@ -126,6 +151,95 @@ app.delete("/event/delete/:id" , function(req,res){
   })
   return res.send("deleted")
 })
+//camper participate to event
+app.put("/event/participate/:id",function(request,response){
+  const { id } = request.params;
+  console.log(request.body)
+  Event.updateOne({_id: id}, {participants: request.body}
+    ,function(err){
+      if(err){
+        console.log("failed");
+      }else{
+        console.log("success update");
+      }
+    })
+  return response.send("update")
+});
+app.put("/event/unparticipate/:id/:campeur",function(request,response){
+  const { id } = request.params;
+  console.log(request.body)
+  Event.updateOne({_id: id}, {participants: []}
+    ,function(err){
+      if(err){
+        console.log("failed");
+      }else{
+        console.log("success update");
+      }
+    })
+  return response.send("update")
+});
+//shareEvent
+const ShareEventSchema = new mongoose.Schema({
+  titre: String,
+  description: String,
+  date: Date,
+  position:{
+    Longitude: Number,
+    Latitude: Number
+  }
+});
+const ShareEvent = mongoose.model("ShareEvent", ShareEventSchema)
+
+app.get("/share/events",function(request,response){
+  ShareEvent.find(function(err, shareevents){
+    if(err){
+      console.log(err);
+    }else{
+      //mongoose.connection.close();
+      //events.forEach(function(event){
+        //console.log(event.createur.nom);
+      //});
+      response.send(shareevents);
+    }
+  });
+});
+
+app.post("/share/event/create",function(request,response){
+  console.log(request.body)
+  const shareevent = new ShareEvent(request.body)
+  shareevent.save()
+  response.send(shareevent)
+  return 
+});
+//Commentaire
+const commentaireSchema = new mongoose.Schema({
+  idEvent: String,
+  idCampeur: String,
+  commentaire: String
+});
+const Commentaire = mongoose.model("Commentaire", commentaireSchema)
+
+app.get("/share/events/commentaires",function(request,response){
+  Commentaire.find(function(err, commentaires){
+    if(err){
+      console.log(err);
+    }else{
+      //mongoose.connection.close();
+      //events.forEach(function(event){
+        //console.log(event.createur.nom);
+      //});
+      response.send(commentaires);
+    }
+  });
+});
+
+app.post("/share/event/commentaire/create",function(request,response){
+  console.log(request.body)
+  const commentaire = new Commentaire(request.body)
+  commentaire.save()
+  response.send(commentaire)
+  return 
+});
 
 /*
 mongoose.connect("mongodb://127.0.0.1:27017/campingDB", { useNewUrlParser: true });
