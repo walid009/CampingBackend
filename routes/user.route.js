@@ -14,5 +14,8 @@ const userController = require("../controllers/users.controller");
  router.post("/login",userController.login)
  router.get("/emailexist/:email",userController.EmailExist)
  router.get("/getUserWithoutAuthenticate/:email",userController.findUserByEmail)
+ router.put("/resetpassword/:email",userController.sendMailForgetPassword)
+ router.get("/checkKeyReset/:email/:resetpwd",userController.checkKeyReset)
+ router.put("/sendmodifiedpassword/:email/:password",userController.sendModifiedPassword)
  
  module.exports = router;

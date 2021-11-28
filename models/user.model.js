@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     role: String,
     telephone: String,
     valid: Boolean,
+    resetpwd: String
   },
   {
     timestamps: true,

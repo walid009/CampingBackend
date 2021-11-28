@@ -1,7 +1,8 @@
-const { User } = require("../models/user.model")
+const { User } = require("../models/user.model");
 const mongoose = require("mongoose");
-const jwt = require('jsonwebtoken')
-const md5 = require("md5")
+const jwt = require('jsonwebtoken');
+const md5 = require("md5");
+const nodemailer = require('nodemailer');
 
 module.exports = {
   getAllUser: async (req, res) => {
@@ -131,4 +132,96 @@ module.exports = {
       res.json({ message: "Unauthorized access header" });
     }
   },
+
+  sendMailForgetPassword: async (req, res) => {
+    const { email } = req.params;
+    console.log(email)
+
+    const isUserFound = await User.findOne({email})
+
+    if (!isUserFound) {
+      return res.status(404).json({ created: false, message: "Email not Exist" });
+    }
+
+    var random_number = Math.floor(Math.random() * 10000);
+    console.log(random_number.toString());
+
+    await User.updateOne({email},{resetpwd: random_number.toString()})
+
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'camper.tn1@gmail.com',
+        pass: 'a12345678*'
+      }
+    });
+    let mailOptions = {
+      from: 'camper.tn1@gmail.com',
+      to: isUserFound.email,
+      subject: 'Rest Password',
+      text: 'reset password key is '+random_number
+    };
+    await transporter.sendMail(mailOptions,function(err,data){
+      if(err){
+        console.log('Error Occurs');
+      }else{
+        console.log('Email Sent');
+      }
+    });
+    
+    return res.send("Mail reset password sent successfully: "+ isUserFound.email);
+  },
+  checkKeyReset: async(req, res) => {
+    const { email } = req.params
+    const { resetpwd } = req.params
+    const isUserFound = await User.findOne({ email });
+
+    if (isUserFound) {
+      console.log(isUserFound.resetpwd)
+      console.log(resetpwd)
+      if(isUserFound.resetpwd == resetpwd){
+        return res.json({ key: true });
+      }
+      return res.json({ key: false });
+    }
+    return res.json({ key: false });
+  },
+
+  sendModifiedPassword: async (req, res) => {
+    const { email } = req.params;
+    const { password } = req.params;
+    console.log(email)
+
+    const isUserFound = await User.findOne({email})
+
+    if (!isUserFound) {
+      return res.status(404).json({ created: false, message: "Email not Exist" });
+    }
+
+    await User.updateOne({email},{resetpwd: "", password: md5(password) })
+
+    let transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: 'camper.tn1@gmail.com',
+        pass: 'a12345678*'
+      }
+    });
+    let mailOptions = {
+      from: 'camper.tn1@gmail.com',
+      to: isUserFound.email,
+      subject: 'Successfully Reset Password',
+      text: 'You re password has been successfully reset congratulations'
+    };
+    await transporter.sendMail(mailOptions,function(err,data){
+      if(err){
+        console.log('Error Occurs');
+      }else{
+        console.log('Email Sent');
+      }
+    });
+    
+    return res.send("Password was reset Successfully: "+ isUserFound.email);
+  },
+
 };

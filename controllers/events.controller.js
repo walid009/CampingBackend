@@ -43,4 +43,31 @@ module.exports = {
     });
     return res.send("deleted");
   },
+  //camper participate to event app.put("/event/participate/:id"
+  participateToEvent: async(req, res) => {
+    const { id } = req.params;
+    const event = await Event.findById(id);
+    event.participants.push(req.body)
+    console.log(req.body);
+    await Event.findByIdAndUpdate(id, event)
+    /*Event.updateOne({event}, function (err) {
+      if (err) {
+        console.log("failed");
+      } else {
+        console.log("success update");
+      }
+    });*/
+    return res.send("update");
+  },
+  UserAlreadyParticipate: async(req, res) => {
+    const  { _id } = req.params
+    const { email } = req.params
+    console.log("hello")
+    const userIsFoundInevent = await Event.findOne({_id, participants: {$elemMatch: {email} }});
+    console.log(userIsFoundInevent)
+    if (userIsFoundInevent) {
+      return res.json({ exist: true });
+    }
+    return res.json({ exist: false });
+  },
 };

@@ -41,6 +41,7 @@ app.put("/event/participate/:id",function(request,response){
     })
   return response.send("update")
 });
+
 app.put("/event/unparticipate/:id/:campeur",function(request,response){
   const { id } = request.params;
   console.log(request.body)
