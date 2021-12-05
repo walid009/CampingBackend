@@ -7,7 +7,7 @@ const nodemailer = require('nodemailer');
 module.exports = {
   getAllUser: async (req, res) => {
     const users = await User.find();
-    res.send(users);
+    res.status(200).send(users);
   },
   EmailExist: async(req, res) => {
     const { email } = req.params

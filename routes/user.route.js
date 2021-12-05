@@ -3,9 +3,11 @@ const router = express.Router();
 
 const userController = require("../controllers/users.controller");
 
+
 /**
  * @Path /users
  */
+
  router.get("/",userController.getAllUser)
  router.post("/create",userController.createUser)
  router.get("/confirm/:id",userController.updateValidationOrginasateur)

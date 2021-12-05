@@ -26,6 +26,8 @@ const eventSchema = new mongoose.Schema(
     },
     createur: userSchema,
     participants: [userSchema],
+    idcreateur: String,
+    image: String,
   },
   {
     timestamps: true,

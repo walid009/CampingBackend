@@ -8,6 +8,37 @@ const app = express()
 app.use(bodyParser.json({ type: 'application/json' }))
 //app.use(express.json)
 
+const swaggerJsDoc = require('swagger-jsdoc');
+const swaggerUi = require('swagger-ui-express');
+
+const swaggerOptions = {
+  swaggerDefinition: {
+    info: {
+      title: "Documentation Backend",
+      description: "information",
+      contact: {
+        name: "Amazing Developer"
+      },
+      servers: ["http://localhost:3000"]
+    }
+  },
+  apis: ["./routes/event.route.js"]
+}
+
+const swaggerDocs = swaggerJsDoc(swaggerOptions);
+
+const { MongoClient } = require("mongodb");
+
+// Replace the uri string with your MongoDB deployment's connection string.
+const uri =
+  "mongodb+srv://dbWalidCamping:1234@campingdb.nslug.mongodb.net/dbWalidCamping?retryWrites=true&w=majority";
+
+/*mongoose.connect(uri).then(()=> {
+  console.log("database is connected")
+}).catch(err => {
+  console.log(console.log(err))
+});*/
+
 mongoose.connect("mongodb://127.0.0.1:27017/campingDB").then(()=> {
   console.log("database is connected")
 }).catch(err => {
@@ -22,10 +53,10 @@ app.listen(3000, function(){
 
 const userRoute = require("./routes/user.route")
 const eventRoute = require("./routes/event.route")
-
+app.use("/api-docs",swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use("/users", userRoute)
 app.use("/events", eventRoute)
-
+app.use(express.static('uploads/images'))
 
 //camper participate to event
 app.put("/event/participate/:id",function(request,response){
@@ -41,7 +72,6 @@ app.put("/event/participate/:id",function(request,response){
     })
   return response.send("update")
 });
-
 app.put("/event/unparticipate/:id/:campeur",function(request,response){
   const { id } = request.params;
   console.log(request.body)

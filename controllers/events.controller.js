@@ -8,8 +8,16 @@ module.exports = {
     res.send(events);
   },
   createEvent: async (req, res) => {
-    const { titre, description } = req.body;
-    const event = new Event({ titre, description });
+    console.log(req.file)
+    console.log(req.body.image)
+    const { titre, description, position, idcreateur } = req.body;
+    const event = new Event({ titre, description, position, idcreateur,image:  req.file.filename  });
+    await event.save();
+    res.send(event);
+  },
+  createEventWithoutImage: async (req, res) => {
+    const { titre, description, position, idcreateur } = req.body;
+    const event = new Event({ titre, description, position, idcreateur });
     await event.save();
     res.send(event);
   },
