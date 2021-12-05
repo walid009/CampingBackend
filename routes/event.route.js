@@ -24,7 +24,7 @@ const upload = require('../midlleware/storage');
  router.get("/", userController.authenticate, eventController.getAllEvent)
  router.post("/create",upload.single('image') ,eventController.createEvent)
  router.post("/createWithoutImage",eventController.createEventWithoutImage)
- router.put("/update/:id", eventController.updateEvent)
+  router.put("/update/:id", eventController.updateEvent)
  /**
  * @swagger
  * /events/delete/{id}:
