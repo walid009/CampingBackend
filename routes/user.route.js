@@ -14,6 +14,7 @@ const userController = require("../controllers/users.controller");
  router.get("/getUser/:email",userController.authenticate,userController.findUserByEmail)
  router.put("/update/:id",userController.authenticate,userController.updateUser)
  router.post("/login",userController.login)
+ router.post("/loginGmail",userController.loginGmail)
  router.get("/emailexist/:email",userController.EmailExist)
  router.get("/getUserWithoutAuthenticate/:email",userController.findUserByEmail)
  router.put("/resetpassword/:email",userController.sendMailForgetPassword)

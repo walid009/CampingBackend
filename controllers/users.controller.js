@@ -99,6 +99,16 @@ module.exports = {
       res.json({ message: "Authentication Failed", success: false });
     }
   },
+  loginGmail: async (req, res) => {
+    const email = req.body.email;
+        await jwt.sign({ email }, "secretkey", (err, token) => {
+          if (token) {
+            return res.json({
+              token,
+            });
+          }
+        });       
+  },
   authenticate: (req, res, next) => {
     const headers = req.headers["authorization"];
     if (headers) {
