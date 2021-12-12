@@ -3,24 +3,30 @@ const mongoose = require("mongoose");
 const jwt = require('jsonwebtoken')
 
 module.exports = {
+  getAllEventCreatedBy: async (req, res) => {
+    const { emailcreateur } = req.params;
+    const events = await Event.find({emailcreateur});
+    res.send(events);
+  },
   getAllEvent: async (req, res) => {
     const events = await Event.find();
     res.send(events);
   },
   createEvent: async (req, res) => {
     console.log(req.file)
-    console.log(req.body.image)
-    const { titre, description, position, idcreateur } = req.body;
-    const event = new Event({ titre, description, position, idcreateur,image:  req.file.filename  });
+    const { titre, description, emailcreateur, phonecreateur } = req.body;
+    console.log(req.body)
+    console.log(req.body.Longitude)
+    const event = new Event({ titre, description, Longitude: req.body.Longitude, Latitude: req.body.Latitude, emailcreateur,image:  req.file.filename, phonecreateur  });
     await event.save();
     res.send(event);
   },
-  createEventWithoutImage: async (req, res) => {
+  /*createEventWithoutImage: async (req, res) => {
     const { titre, description, position, idcreateur } = req.body;
     const event = new Event({ titre, description, position, idcreateur });
     await event.save();
     res.send(event);
-  },
+  },*/
   updateEvent: (req, res) => {
     const { id } = req.params;
     console.log(req.body);

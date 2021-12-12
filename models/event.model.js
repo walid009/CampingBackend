@@ -20,13 +20,11 @@ const eventSchema = new mongoose.Schema(
     titre: String,
     description: String,
     date: Date,
-    position: {
-      Longitude: Number,
-      Latitude: Number,
-    },
-    createur: userSchema,
+    Longitude: Number,
+    Latitude: Number,
     participants: [userSchema],
-    idcreateur: String,
+    emailcreateur: String,
+    phonecreateur: String,
     image: String,
   },
   {

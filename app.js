@@ -53,11 +53,17 @@ app.listen(3000, function(){
 
 const userRoute = require("./routes/user.route")
 const eventRoute = require("./routes/event.route")
+const shareRoute = require("./routes/share.route")
+const commentaireRoute = require("./routes/commentaire.route")
+
 app.use("/api-docs",swaggerUi.serve, swaggerUi.setup(swaggerDocs))
 app.use("/users", userRoute)
 app.use("/events", eventRoute)
+app.use("/shares", shareRoute)
+app.use("/commentaires", commentaireRoute)
 app.use(express.static('uploads/images'))
 
+/*
 //camper participate to event
 app.put("/event/participate/:id",function(request,response){
   const { id } = request.params;

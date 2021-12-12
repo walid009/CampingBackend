@@ -22,8 +22,9 @@ const upload = require('../midlleware/storage');
  *         description: A successful response
  */
  router.get("/", userController.authenticate, eventController.getAllEvent)
+ router.get("/:emailcreateur", userController.authenticate, eventController.getAllEventCreatedBy)
  router.post("/create",upload.single('image') ,eventController.createEvent)
- router.post("/createWithoutImage",eventController.createEventWithoutImage)
+ //router.post("/createWithoutImage",eventController.createEventWithoutImage)
   router.put("/update/:id", eventController.updateEvent)
  /**
  * @swagger
