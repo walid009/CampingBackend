@@ -29,7 +29,8 @@ const shareSchema = new mongoose.Schema(
       Longitude: Number,
       Latitude: Number,
       emailcreateur: String,
-      emailpartageur: String
+      emailpartageur: String,
+      image: String
     },
     {
       timestamps: true,

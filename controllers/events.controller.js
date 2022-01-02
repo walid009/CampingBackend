@@ -14,10 +14,10 @@ module.exports = {
   },
   createEvent: async (req, res) => {
     console.log(req.file)
-    const { titre, description, emailcreateur, phonecreateur } = req.body;
+    const { titre, description, emailcreateur, phonecreateur, date, price } = req.body;
     console.log(req.body)
     console.log(req.body.Longitude)
-    const event = new Event({ titre, description, Longitude: req.body.Longitude, Latitude: req.body.Latitude, emailcreateur,image:  req.file.filename, phonecreateur  });
+    const event = new Event({ titre, description, Longitude: req.body.Longitude, Latitude: req.body.Latitude, emailcreateur,image:  req.file.filename, phonecreateur, date, price  });
     await event.save();
     res.send(event);
   },
@@ -83,5 +83,15 @@ module.exports = {
       return res.json({ exist: true });
     }
     return res.json({ exist: false });
+  },
+  UsersParticipate: async(req, res) => {
+    const  { _id } = req.params
+    console.log("hello")
+    const event = await Event.findOne({_id});
+    console.log(event.participants.length)
+    if (event.participants.length > 0) {
+      return res.json({ usersExist: true });
+    }
+    return res.json({ usersExist: false });
   },
 };

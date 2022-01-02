@@ -5,6 +5,10 @@ const md5 = require("md5");
 const nodemailer = require('nodemailer');
 
 module.exports = {
+  getAllOrganisateurUser: async (req, res) => {
+    const users = await User.find({role: "Organisateur"});
+    res.status(200).send(users);
+  },
   getAllUser: async (req, res) => {
     const users = await User.find();
     res.status(200).send(users);
@@ -19,7 +23,7 @@ module.exports = {
     return res.json({ exist: false });
   },
   createUser: async (req, res) => {
-    const { nom, prenom, email, role, telephone, valid } = req.body;
+    const { nom, prenom, email, role, telephone, valid, approved } = req.body;
     const mdp = req.body.password
 
     const isUserFound = await User.findOne({ email });
@@ -36,10 +40,36 @@ module.exports = {
       role,
       telephone,
       valid,
+      approved
     });
 
     await user.save();
     res.json(user);
+  },
+
+  approveUser: async (req, res) => {
+    const { id } = req.params;
+    const approved = true
+    User.updateOne({ _id: id }, { approved }, function (err) {
+      if (err) {
+        console.log("failed");
+      } else {
+        console.log("success approved user");
+      }
+    });
+    return res.send("update");
+  },
+  DisapproveUser: async (req, res) => {
+    const { id } = req.params;
+    const approved = false
+    User.updateOne({ _id: id }, { approved }, function (err) {
+      if (err) {
+        console.log("failed");
+      } else {
+        console.log("success Disapproved user");
+      }
+    });
+    return res.send("update");
   },
 
   updateUser: async (req, res) => {

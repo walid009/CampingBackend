@@ -8,6 +8,10 @@ const userController = require("../controllers/users.controller");
  * @Path /users
  */
 
+ router.put("/disapproved/:id",userController.DisapproveUser)
+ router.put("/approved/:id",userController.approveUser)
+
+ router.get("/organisateur",userController.getAllOrganisateurUser)
  router.get("/",userController.getAllUser)
  router.post("/create",userController.createUser)
  router.get("/confirm/:id",userController.updateValidationOrginasateur)

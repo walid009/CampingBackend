@@ -72,5 +72,6 @@ const upload = require('../midlleware/storage');
  *         description: A successful response
  */
  router.get("/UserAlreadyParticipate/:_id/:email",eventController.UserAlreadyParticipate)
-
+ router.get("/UsersParticipateTothisEvent/:_id",eventController.UsersParticipate)
+ 
  module.exports = router;

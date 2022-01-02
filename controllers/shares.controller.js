@@ -8,9 +8,9 @@ module.exports = {
         res.send(shares);
     },
     createEvent: async (req, res) => {
-        const { titre, description, Longitude, Latitude, emailcreateur, emailpartageur } = req.body;
+        const { titre, description, Longitude, Latitude, emailcreateur, emailpartageur, date, image } = req.body;
         console.log(req.body)
-        const share = new Share({ titre, description, Longitude, Latitude, emailcreateur, emailpartageur});
+        const share = new Share({ titre, description, Longitude, Latitude, emailcreateur, emailpartageur, date, image});
         await share.save();
         res.send(share);
     },

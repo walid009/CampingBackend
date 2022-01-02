@@ -9,6 +9,7 @@ const userSchema = new mongoose.Schema(
     role: String,
     telephone: String,
     valid: Boolean,
+    approved: Boolean
   },
   {
     timestamps: true,
@@ -26,6 +27,7 @@ const eventSchema = new mongoose.Schema(
     emailcreateur: String,
     phonecreateur: String,
     image: String,
+    price: String
   },
   {
     timestamps: true,
