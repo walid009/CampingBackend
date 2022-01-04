@@ -17,7 +17,7 @@ CampingBackend c'est le serveur de notre application mobile [Android/iOS], en no
 #### Swagger
 
 - Si on utilise la commande npm start app.js lien : http://localhost:3000/Api-docs/
-- Si on utilise Docker lien : http://localhost:3000/Api-docs/
+- Si on utilise Docker lien : http://localhost:3005/Api-docs/
 
 ---
 
