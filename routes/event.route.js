@@ -22,6 +22,23 @@ const upload = require('../midlleware/storage');
  *         description: A successful response
  */
  router.get("/", userController.authenticate, eventController.getAllEvent)
+   /**
+ * @swagger
+ * /events/{emailcreateur}:
+ *   get:
+ *     summary: Get all events by email 
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: emailcreateur
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Email creator
+ *     responses: 
+ *       '200':
+ *         description: A successful response
+ */
  router.get("/:emailcreateur", userController.authenticate, eventController.getAllEventCreatedBy)
  router.post("/create",upload.single('image') ,eventController.createEvent)
  //router.post("/createWithoutImage",eventController.createEventWithoutImage)
@@ -47,6 +64,24 @@ const upload = require('../midlleware/storage');
  *         description: The book was not found
  */
  router.delete("/delete/:id", eventController.deleteEvent)
+  /**
+ * @swagger
+ * /events/put/{id}:
+ *   put:
+ *     summary: Participate to event by id
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The event id
+ * 
+ *     responses:
+ *       200:
+ *         description: Participated      
+ */
  router.put("/participate/:id",eventsController.participateToEvent)
   /**
  * @swagger
@@ -72,6 +107,23 @@ const upload = require('../midlleware/storage');
  *         description: A successful response
  */
  router.get("/UserAlreadyParticipate/:_id/:email",eventController.UserAlreadyParticipate)
+   /**
+ * @swagger
+ * /events/UsersParticipateTothisEvent/{id}:
+ *   get:
+ *     summary: check if user already participate to event 
+ *     tags: [Events]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: The event id
+ *     responses: 
+ *       '200':
+ *         description: A successful response
+ */
  router.get("/UsersParticipateTothisEvent/:_id",eventController.UsersParticipate)
  
  module.exports = router;
