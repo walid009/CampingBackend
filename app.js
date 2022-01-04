@@ -39,7 +39,7 @@ const uri =
   console.log(console.log(err))
 });*/
 
-mongoose.connect("mongodb://127.0.0.1:27017/campingDB").then(()=> {
+mongoose.connect("mongodb://database_service/campingDB").then(()=> {
   console.log("database is connected")
 }).catch(err => {
   console.log(console.log(err))
