@@ -16,13 +16,16 @@ CampingBackend c'est le serveur de notre application mobile [Android/iOS], en no
 
 #### Swagger
 
-- lien : http://localhost:3000/Api-docs/
+- Si on utilise la commande npm start app.js lien : http://localhost:3000/Api-docs/
+- Si on utilise Docker lien : http://localhost:3005/Api-docs/
 
 ---
 
 #### Technologies
 
-- Technology Node && Express
+- Node  
+- Express
+- Docker
 
 ---
 
@@ -35,8 +38,15 @@ CampingBackend c'est le serveur de notre application mobile [Android/iOS], en no
 clone the repo and install the dependencies :
 - clone https://github.com/walid009/CampingBackend.git
 - npm install
+
+Node :
 - brew services start mongodb-community@4.4
 - nodemon app.js
+- lancer le projet avec la commande: npm start app.js
+
+Docker:
+- lancer le projet de facon detacher avec la commande : docker-compose up -d
+- arrete le projet avec la commande : docker-compose down IdContainer
 
 ## License
 

@@ -41,7 +41,11 @@ mongoose.connect(uri).then(()=> {
   console.log(console.log(err))
 });
 
+<<<<<<< HEAD
 /*mongoose.connect("mongodb://127.0.0.1:27017/campingDB").then(()=> {
+=======
+mongoose.connect("mongodb://database_service/campingDB").then(()=> {
+>>>>>>> 834dbe57cd55c20390ff9874d9d687e2bcf77b42
   console.log("database is connected")
 }).catch(err => {
   console.log(console.log(err))
