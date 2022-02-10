@@ -29,25 +29,27 @@ const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 const { MongoClient } = require("mongodb");
 
+const PORT = process.env.PORT || 3000;
+
 // Replace the uri string with your MongoDB deployment's connection string.
 const uri =
   "mongodb+srv://dbWalidCamping:1234@campingdb.nslug.mongodb.net/dbWalidCamping?retryWrites=true&w=majority";
 
-/*mongoose.connect(uri).then(()=> {
-  console.log("database is connected")
-}).catch(err => {
-  console.log(console.log(err))
-});*/
-
-mongoose.connect("mongodb://127.0.0.1:27017/campingDB").then(()=> {
+mongoose.connect(uri).then(()=> {
   console.log("database is connected")
 }).catch(err => {
   console.log(console.log(err))
 });
 
-app.listen(3000, function(){
+/*mongoose.connect("mongodb://127.0.0.1:27017/campingDB").then(()=> {
+  console.log("database is connected")
+}).catch(err => {
+  console.log(console.log(err))
+});*/
+
+app.listen(PORT, function(){
   const today = new Date()
-  console.log("Server started on port 3000 "+today);
+  console.log("Server started on port "+PORT+" "+today);
 })
 
 
